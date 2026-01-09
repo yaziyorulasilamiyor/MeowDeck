@@ -1,0 +1,16 @@
+{
+  "name": "kedi-asistani",
+  "version": "0.1.0",
+  "main": "main.js",
+  "private": true,
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-rebuild": "^3.2.9"
+  },
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.4.1"
+  }
+}

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kedi Asistanı</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="stage">
+    <div class="stage-inner">
+
+      <!-- Splash / Loading Ekranı -->
+      <section id="splash" class="screen">
+        <button id="btn-audio" class="audio-toggle" aria-pressed="false" title="Mute/Unmute">🔊</button>
+        <img src="assets/loading_bg.png" alt="bg" class="bg" />
+        <div class="center">
+          <img src="assets/cat_idle.png" class="cat-idle" alt="cat" />
+          <div class="loading-text">Yükleniyor…</div>
+        </div>
+      </section>
+
+      <!-- Seçim Ekranı -->
+      <section id="select" class="screen hidden">
+        <img src="assets/bg.png" alt="bg" class="bg" />
+
+        <div class="select-wrap">
+          <h1 class="title">Choose your meow</h1>
+
+          <p class="demo-note">
+            Demo sürümü: Şu an yalnızca beyaz kedi aktif.
+          </p>
+
+          <!-- KEDİ GRIDİ -->
+          <div id="cat-grid" class="cat-grid" tabindex="-1">
+            <button class="cat" data-id="cat1"><div class="sprite cat1"></div></button>
+            <button class="cat" data-id="cat2"><div class="sprite cat2"></div></button>
+            <button class="cat" data-id="cat3"><div class="sprite cat3"></div></button>
+            <button class="cat" data-id="cat4"><div class="sprite cat4"></div></button>
+            <button class="cat" data-id="white"><div class="sprite cat5"></div></button>
+
+            <!-- pembe çerçeve -->
+            <div id="cursor" class="cursor"></div>
+          </div>
+          <!-- /KEDİ GRIDİ -->
+        </div>
+      </section>
+
+      <!-- TRAITS (karakter seçimi) -->
+      <section id="traits" class="screen hidden">
+        <img src="assets/bg.png" alt="" class="bg" />
+
+        <div class="traits-wrap">
+          <div class="traits-canvas">
+            <img id="trait-preview" class="trait-preview" src="" alt="preview" />
+
+            <div class="trait-name"></div>
+            <div class="trait-desc"></div>
+
+            <div class="trait-nav left" role="button" aria-label="prev">◄</div>
+            <div class="trait-nav right" role="button" aria-label="next">►</div>
+
+            <div class="trait-tips">← → ile değiştir • Space/Enter ile onayla • Esc geri</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NAME MODAL -->
+      <section id="name-modal" class="modal hidden" aria-modal="true" role="dialog">
+        <div class="modal-box">
+          <div class="modal-title">Name your cat</div>
+
+          <input id="name-input" type="text" maxlength="16" placeholder="Pofuduk" />
+
+          <div class="modal-action">
+            <button id="name-cancel" type="button">Cancel</button>
+            <button id="name-ok" type="button">OK</button>
+          </div>
+
+          <div class="modal-hint">Enter ile onayla • Esc ile kapat</div>
+        </div>
+      </section>
+
+      <!-- SCENE2 -->
+      <section id="scene2" class="screen hidden">
+        <div class="scene2-wrap">
+          <div class="scene2-canvas">
+            <img src="./assets/scene2/bg.png" class="scene2-bg" alt="">
+            <img id="scene2-cat" src="./assets/scene2/anim.gif" class="scene2-cat" alt="">
+
+            <div class="scene2-label">unbox the cat</div>
+            <div class="scene2-msg1 hidden">you sucesfully unboxed the cat</div>
+            <div class="scene2-msg2 hidden">but cat looks... dirty?</div>
+
+            <img id="btn-bath" src="./assets/scene2/button2.png" class="scene2-btn2 hidden" alt="to the bathroom">
+          </div>
+        </div>
+      </section>
+
+      <!-- BATHROOM -->
+      <section id="bathroom" class="screen hidden">
+        <div class="bathroom-wrap">
+          <div class="bathroom-canvas">
+            <img src="./assets/bathroom/bathroom.png" class="bathroom-bg" alt="">
+            <img id="bath-cat" src="./assets/bathroom/idlecat2.png" class="bathroom-cat" alt="">
+
+            <div id="bath-title" class="bathroom-title">Lets wash our cat!</div>
+
+            <button id="btn-try-playing" class="bathroom-try hidden">
+              Let’s try playing
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- MAIN -->
+      <section id="main" class="screen hidden">
+        <div class="main-canvas">
+          <img class="main-bg" src="assets/main/main_bg.png" alt="main bg" />
+          <img class="main-top" src="assets/main/top_ui.png" alt="top ui" />
+
+          <button id="btn-profile" class="main-btn main-profile" aria-label="Profile"></button>
+          <button id="btn-settings" class="main-btn main-settings" aria-label="Settings"></button>
+          <button id="btn-exit" class="main-btn main-exit" aria-label="Exit"></button>
+          <button id="btn-credits" class="main-btn main-credits" aria-label="Credits"></button>
+
+          <img class="main-cat" src="assets/main/cat_idle.gif" alt="cat idle" />
+
+          <button id="btn-playroom" class="main-btn main-playroom" aria-label="Playroom"></button>
+          <button id="btn-bathroom" class="main-btn main-bathroom" aria-label="Bathroom"></button>
+        </div>
+      </section>
+
+      <!-- PROFILE  -->
+      <section id="profile" class="screen hidden">
+        <div class="profile-canvas">
+          <img class="profile-bg" src="assets/profile/profile_bg.png" alt="profile">
+
+          <button id="btn-profile-close" class="profile-close" aria-label="Close"></button>
+          <div id="profile-adopted" class="profile-adopted"></div>
+
+          <!-- 12 kalp -->
+          <img id="h-happiness-0" class="heart" alt="">
+          <img id="h-happiness-1" class="heart" alt="">
+          <img id="h-happiness-2" class="heart" alt="">
+
+          <img id="h-cleanliness-0" class="heart" alt="">
+          <img id="h-cleanliness-1" class="heart" alt="">
+          <img id="h-cleanliness-2" class="heart" alt="">
+
+          <img id="h-hunger-0" class="heart" alt="">
+          <img id="h-hunger-1" class="heart" alt="">
+          <img id="h-hunger-2" class="heart" alt="">
+
+          <img id="h-energy-0" class="heart" alt="">
+          <img id="h-energy-1" class="heart" alt="">
+          <img id="h-energy-2" class="heart" alt="">
+        </div>
+      </section>
+
+    </div><!-- /.stage-inner -->
+  </div><!-- /.stage -->
+
+  <script src="script.js"></script>
+</body>
+</html>
