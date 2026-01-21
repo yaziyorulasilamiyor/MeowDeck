@@ -113,7 +113,7 @@ Odak: UI flow, sahne yapısı, asset pipeline ve “kedi sim” temel hissi.
 ---
 
 ## Lisans
-TBD (gerekirse MIT eklenebilir)
+TBD 
 
 
 ----
@@ -148,4 +148,3 @@ Many core mechanics are still under development.
 
 ## ⚖️ License
 License: TBD  
-(May be released under MIT license in the future.)
