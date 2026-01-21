@@ -49,7 +49,7 @@ Bu proje şu an **desktop web demo** gibi çalışacak şekilde tasarlandı.
 1. Repo’yu indir / clone’la
 2. `index.html` dosyasını tarayıcıda aç
 
-> Tavsiye: Live Server (VS Code) ile açarsan daha rahat olur.
+> Tavsiye: Live Server (VS Code) ile açarsanız daha rahat olur.
 
 ---
 
@@ -92,8 +92,7 @@ Bu proje şu an **desktop web demo** gibi çalışacak şekilde tasarlandı.
 - Buton click/hover sesleri
 
 ### Ek Sahne/Fonksiyonlar
-- Veteriner “hatırlatma” sistemi (takvim gibi)  
-  > Büyük sahne yapmak yerine bildirim/hatırlatma mantığı daha mantıklı olabilir.
+- Veteriner “hatırlatma” sistemi 
 
 ## İleride Eklenecekler için MockUp-Gui
 
