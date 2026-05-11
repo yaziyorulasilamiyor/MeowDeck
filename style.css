@@ -3,15 +3,12 @@
    =========================== */
 
 :root {
-    
     --w: 1132px;
     --h: 962px;
     --ui-scale: 1;
 }
 
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 html, body {
     margin: 0;
@@ -30,7 +27,6 @@ html, body {
     background: #000;
 }
 
-
 .stage-inner {
     width: 1024px;
     height: 1024px;
@@ -39,17 +35,22 @@ html, body {
     image-rendering: pixelated;
 }
 
-
 body::before {
     content: "";
     position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background-image: url("assets/ui/backdrop_left.png"), url("assets/ui/backdrop_center.png"), url("assets/ui/backdrop_right.png");
+    background-image:
+        url("assets/ui/backdrop_left.png"),
+        url("assets/ui/backdrop_center.png"),
+        url("assets/ui/backdrop_right.png");
     background-repeat: no-repeat, no-repeat, no-repeat;
     background-position: left top, center top, right top;
-    background-size: max(0px, calc((100vw - var(--w)) / 2)) 100vh, min(100vw, var(--w)) 100vh, max(0px, calc((100vw - var(--w)) / 2)) 100vh;
+    background-size:
+        max(0px, calc((100vw - var(--w)) / 2)) 100vh,
+        min(100vw, var(--w)) 100vh,
+        max(0px, calc((100vw - var(--w)) / 2)) 100vh;
 }
 
 .screen {
@@ -62,9 +63,7 @@ body::before {
     overflow: hidden;
 }
 
-.hidden {
-    display: none !important;
-}
+.hidden { display: none !important; }
 
 .bg {
     position: absolute;
@@ -95,23 +94,18 @@ body::before {
     animation: float 2.2s ease-in-out infinite alternate;
 }
 
-
 .loading-text {
     font-size: 24px;
     font-weight: 700;
     color: #fff;
     letter-spacing: 0.5px;
-    text-shadow: -2px 0 #000, 2px 0 #000, 0 -2px #000, 0 2px #000, -2px -2px #000, 2px -2px #000, -2px 2px #000, 2px 2px #000;
+    text-shadow: -2px 0 #000, 2px 0 #000, 0 -2px #000, 0 2px #000,
+                 -2px -2px #000, 2px -2px #000, -2px 2px #000, 2px 2px #000;
 }
 
 @keyframes float {
-    from {
-        transform: translateY(0);
-    }
-
-    to {
-        transform: translateY(10px);
-    }
+    from { transform: translateY(0); }
+    to   { transform: translateY(10px); }
 }
 
 /* ===========================
@@ -132,10 +126,7 @@ body::before {
     font-size: 18px;
     cursor: pointer;
 }
-
-    .audio-toggle:hover {
-        transform: scale(1.05);
-    }
+.audio-toggle:hover { transform: scale(1.05); }
 
 /* ===========================
    SELECT SCREEN
@@ -158,7 +149,6 @@ body::before {
     font-size: 48px;
     color: #c89ac7;
     -webkit-text-stroke: 3px #000;
-    text-shadow: none;
 }
 
 .demo-note {
@@ -193,10 +183,7 @@ body::before {
     padding: 0;
     cursor: pointer;
 }
-
-    .cat:focus {
-        outline: none;
-    }
+.cat:focus { outline: none; }
 
 .cursor {
     position: absolute;
@@ -225,39 +212,15 @@ body::before {
     will-change: background-position;
 }
 
-.cat1 {
-    background-image: url("assets/cats/cat1_sprite.png");
-    animation: catplay .8s steps(7) infinite;
-}
-
-.cat2 {
-    background-image: url("assets/cats/cat2_sprite.png");
-    animation: catplay .8s steps(7) infinite;
-}
-
-.cat3 {
-    background-image: url("assets/cats/cat3_sprite.png");
-    animation: catplay .8s steps(7) infinite;
-}
-
-.cat4 {
-    background-image: url("assets/cats/cat4_sprite.png");
-    animation: catplay .8s steps(7) infinite;
-}
-
-.cat5 {
-    background-image: url("assets/cats/cat5_sprite.png");
-    animation: catplay .8s steps(7) infinite;
-}
+.cat1 { background-image: url("assets/cats/cat1_sprite.png"); animation: catplay .8s steps(7) infinite; }
+.cat2 { background-image: url("assets/cats/cat2_sprite.png"); animation: catplay .8s steps(7) infinite; }
+.cat3 { background-image: url("assets/cats/cat3_sprite.png"); animation: catplay .8s steps(7) infinite; }
+.cat4 { background-image: url("assets/cats/cat4_sprite.png"); animation: catplay .8s steps(7) infinite; }
+.cat5 { background-image: url("assets/cats/cat5_sprite.png"); animation: catplay .8s steps(7) infinite; }
 
 @keyframes catplay {
-    from {
-        background-position: 0 0;
-    }
-
-    to {
-        background-position: -231px 0;
-    }
+    from { background-position: 0 0; }
+    to   { background-position: -231px 0; }
 }
 
 /* ===========================
@@ -288,30 +251,29 @@ body::before {
     image-rendering: pixelated;
 }
 
-
 .trait-name {
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 0; right: 0;
     top: 22px;
     text-align: center;
     font-weight: 700;
     font-size: 30px;
     color: #fff;
-    text-shadow: -2px 0 #000, 2px 0 #000, 0 -2px #000, 0 2px #000, -2px -2px #000, 2px -2px #000, -2px 2px #000, 2px 2px #000;
+    text-shadow: -2px 0 #000, 2px 0 #000, 0 -2px #000, 0 2px #000,
+                 -2px -2px #000, 2px -2px #000, -2px 2px #000, 2px 2px #000;
 }
 
 .trait-desc {
     position: absolute;
-    left: 16px;
-    right: 16px;
+    left: 16px; right: 16px;
     bottom: 86px;
     text-align: center;
     font-size: 22px;
     font-weight: 700;
     color: #fff;
     line-height: 1.15;
-    text-shadow: -2px 0 #000, 2px 0 #000, 0 -2px #000, 0 2px #000, -2px -2px #000, 2px -2px #000, -2px 2px #000, 2px 2px #000;
+    text-shadow: -2px 0 #000, 2px 0 #000, 0 -2px #000, 0 2px #000,
+                 -2px -2px #000, 2px -2px #000, -2px 2px #000, 2px 2px #000;
 }
 
 .trait-nav {
@@ -331,19 +293,12 @@ body::before {
     cursor: pointer;
     user-select: none;
 }
-
-    .trait-nav.left {
-        left: 8px;
-    }
-
-    .trait-nav.right {
-        right: 8px;
-    }
+.trait-nav.left  { left: 8px; }
+.trait-nav.right { right: 8px; }
 
 .trait-tips {
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 0; right: 0;
     bottom: 12px;
     text-align: center;
     font-size: 14px;
@@ -393,23 +348,21 @@ body::before {
     outline: none;
 }
 
-
 .modal-action {
     margin-top: 12px;
     display: flex;
     gap: 12px;
     justify-content: flex-end;
 }
-
-    .modal-action button {
-        cursor: pointer;
-        padding: 8px 14px;
-        border-radius: 12px;
-        border: 2px solid #8B3094;
-        background: #FF7AD1;
-        color: #1b1233;
-        font-weight: 700;
-    }
+.modal-action button {
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: 12px;
+    border: 2px solid #8B3094;
+    background: #FF7AD1;
+    color: #1b1233;
+    font-weight: 700;
+}
 
 .modal-hint {
     margin-top: 6px;
@@ -517,10 +470,7 @@ body::before {
     cursor: pointer;
     z-index: 7;
 }
-
-    .scene2-btn2:hover {
-        transform: scale(1.03);
-    }
+.scene2-btn2:hover { transform: scale(1.03); }
 
 /* ===========================
    BATHROOM
@@ -570,10 +520,7 @@ body::before {
     pointer-events: none;
     z-index: 6;
 }
-
-    .bathroom-title .not {
-        color: #000;
-    }
+.bathroom-title .not { color: #000; }
 
 .bathroom-try {
     position: absolute;
@@ -589,11 +536,9 @@ body::before {
     color: #1b0f0a;
     cursor: pointer;
     image-rendering: pixelated;
+    font-family: inherit;
 }
-
-    .bathroom-try:hover {
-        transform: translateX(-50%) translateY(-2px);
-    }
+.bathroom-try:hover { transform: translateX(-50%) translateY(-2px); }
 
 /* ===========================
    MAIN SCREEN
@@ -613,17 +558,8 @@ body::before {
     pointer-events: none;
 }
 
-.main-bg {
-    top: 0;
-    width: 1024px;
-    height: 1024px;
-}
-
-.main-top {
-    top: 0;
-    width: 1024px;
-    height: 168px;
-}
+.main-bg  { top: 0; width: 1024px; height: 1024px; }
+.main-top { top: 0; width: 1024px; height: 168px;  }
 
 .main-btn {
     position: absolute;
@@ -635,34 +571,26 @@ body::before {
 }
 
 .main-profile {
-    left: 0px;
-    top: 168px;
-    width: 188px;
-    height: 178px;
+    left: 0px; top: 168px;
+    width: 188px; height: 178px;
     background: url("assets/main/profile_button.png") center/contain no-repeat;
 }
 
 .main-settings {
-    left: 795px;
-    top: 168px;
-    width: 173px;
-    height: 76px;
+    left: 795px; top: 168px;
+    width: 173px; height: 76px;
     background: url("assets/main/settings.png") center/contain no-repeat;
 }
 
 .main-exit {
-    left: 820px;
-    top: 317px;
-    width: 123px;
-    height: 57px;
+    left: 820px; top: 317px;
+    width: 123px; height: 57px;
     background: url("assets/main/exit.png") center/contain no-repeat;
 }
 
 .main-credits {
-    left: 598px;
-    top: 450px;
-    width: 209px;
-    height: 57px;
+    left: 598px; top: 450px;
+    width: 209px; height: 57px;
     background: url("assets/main/credits.png") center/contain no-repeat;
 }
 
@@ -674,22 +602,122 @@ body::before {
     height: 171px;
     image-rendering: pixelated;
     pointer-events: none;
+    /* GIF değişiminde yumuşak geçiş için */
+    transition: opacity 0.2s ease;
 }
 
 .main-playroom {
-    left: 0px;
-    top: 780px;
-    width: 213px;
-    height: 203px;
+    left: 0px; top: 780px;
+    width: 213px; height: 203px;
     background: url("assets/main/game_room.png") center/contain no-repeat;
 }
 
 .main-bathroom {
-    left: 820px;
-    top: 780px;
-    width: 181px;
-    height: 203px;
+    left: 820px; top: 780px;
+    width: 181px; height: 203px;
     background: url("assets/main/bathroom.png") center/contain no-repeat;
+}
+
+/* ===========================
+   ★ YENİ: STAT BAR (Ana ekran mini göstergesi)
+   =========================== */
+
+.stat-bar {
+    position: absolute;
+    /* Ekranın tam ortasına yakın, kedinin hemen soluna konumlandırdık.
+       Yerini beğenmezsen left/top değerlerini değiştir. */
+    left: 200px;
+    top: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 10;
+    background: rgba(10, 5, 20, 0.55);
+    border: 2px solid #8B3094;
+    border-radius: 12px;
+    padding: 8px 12px;
+    pointer-events: none;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+}
+
+.stat-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+/* Dolu, az, boş nokta renkleri */
+.dot         { font-size: 14px; }
+.dot-full    { color: #FF7AD1; }
+.dot-ok      { color: #FF7AD1; opacity: 0.8; }
+.dot-low     { color: #ffaa33; }   /* sarı → dikkat */
+.dot-empty   { color: #442244; }   /* koyu → boş    */
+
+/* ===========================
+   ★ YENİ: AKSİYON BUTONLARI
+   =========================== */
+
+.action-bar {
+    position: absolute;
+    /* Kedinin hemen altına, ortaya konumlandırdık */
+    left: 50%;
+    bottom: 48px;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 16px;
+    z-index: 20;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    width: 84px;
+    height: 84px;
+
+    background: rgba(27, 18, 51, 0.82);
+    border: 3px solid #8B3094;
+    border-radius: 16px;
+    cursor: pointer;
+    color: #ffe7fb;
+    font-family: inherit;
+
+    /* Pixel efekt için sert gölge */
+    box-shadow: 0 4px 0 #4a0060, 0 0 12px rgba(139,48,148,0.4);
+
+    transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.08s ease;
+    image-rendering: pixelated;
+}
+
+.action-btn:hover {
+    background: rgba(139, 48, 148, 0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #4a0060, 0 0 18px rgba(255,122,209,0.5);
+}
+
+.action-btn:active,
+.action-btn.btn-active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #4a0060;
+    background: rgba(255,122,209,0.25);
+}
+
+.action-icon  { font-size: 30px; line-height: 1; }
+.action-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffe7fb;
+    text-shadow: -1px 0 #000, 1px 0 #000, 0 -1px #000, 0 1px #000;
+    letter-spacing: 0.5px;
 }
 
 /* ===========================
@@ -722,7 +750,6 @@ body::before {
     cursor: pointer;
 }
 
-
 .profile-adopted {
     position: absolute;
     left: 180px;
@@ -732,7 +759,7 @@ body::before {
     text-shadow: 1px 1px 0 rgba(255,255,255,0.35);
 }
 
-/* Heart sprites  */
+/* Heart sprites */
 .heart {
     position: absolute;
     width: 58px;
@@ -742,65 +769,21 @@ body::before {
 }
 
 /* HAPPINESS */
-#h-happiness-0 {
-    left: 409px;
-    top: 467px;
-}
+#h-happiness-0   { left: 409px; top: 467px;    }
+#h-happiness-1   { left: 467px; top: 466.52px; }
+#h-happiness-2   { left: 521px; top: 464.52px; }
 
-#h-happiness-1 {
-    left: 467px;
-    top: 466.52px;
-}
+/* CLEANLINESS */
+#h-cleanliness-0 { left: 409px; top: 568px;    }
+#h-cleanliness-1 { left: 467px; top: 567.52px; }
+#h-cleanliness-2 { left: 521px; top: 565.52px; }
 
-#h-happiness-2 {
-    left: 521px;
-    top: 464.52px;
-}
+/* HUNGER */
+#h-hunger-0      { left: 409px; top: 678px;    }
+#h-hunger-1      { left: 467px; top: 677.52px; }
+#h-hunger-2      { left: 521px; top: 675.52px; }
 
-/* CLEANLINESS (+101px) */
-#h-cleanliness-0 {
-    left: 409px;
-    top: 568px;
-}
-
-#h-cleanliness-1 {
-    left: 467px;
-    top: 567.52px;
-}
-
-#h-cleanliness-2 {
-    left: 521px;
-    top: 565.52px;
-}
-
-/* HUNGER (+110px from cleanliness row) */
-#h-hunger-0 {
-    left: 409px;
-    top: 678px;
-}
-
-#h-hunger-1 {
-    left: 467px;
-    top: 677.52px;
-}
-
-#h-hunger-2 {
-    left: 521px;
-    top: 675.52px;
-}
-
-/* ENERGY (+104px from hunger row) */
-#h-energy-0 {
-    left: 409px;
-    top: 782px;
-}
-
-#h-energy-1 {
-    left: 467px;
-    top: 781.52px;
-}
-
-#h-energy-2 {
-    left: 521px;
-    top: 779.52px;
-}
+/* ENERGY */
+#h-energy-0      { left: 409px; top: 782px;    }
+#h-energy-1      { left: 467px; top: 781.52px; }
+#h-energy-2      { left: 521px; top: 779.52px; }
