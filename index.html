@@ -13,12 +13,12 @@
       <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
       <section id="splash" class="screen">
-        <button id="btn-audio" class="audio-toggle" aria-pressed="false" title="Mute audio">Sound</button>
+        <button id="btn-audio" class="audio-toggle pixel-button small" aria-pressed="false" title="Mute audio">Sound</button>
         <img src="assets/loading_bg.png" alt="" class="screen-bg splash-bg" />
         <div class="splash-card">
           <img src="assets/cat_idle.png" class="splash-cat" alt="Pixel cat" />
           <div class="loading-text">MeowDeck</div>
-          <div class="loading-subtitle">Loading your tiny roommate...</div>
+          <div class="loading-subtitle">A cozy cat day is loading...</div>
         </div>
       </section>
 
@@ -42,12 +42,12 @@
         <img src="assets/bg.png" alt="" class="screen-bg" />
         <div class="traits-wrap">
           <div class="traits-canvas">
-            <button class="trait-nav left" type="button" aria-label="Previous trait">&lt;</button>
+            <button class="trait-nav left pixel-button square" type="button" aria-label="Previous trait">&lt;</button>
             <img id="trait-preview" class="trait-preview" src="assets/traits/shy.gif" alt="Trait preview" />
-            <button class="trait-nav right" type="button" aria-label="Next trait">&gt;</button>
+            <button class="trait-nav right pixel-button square" type="button" aria-label="Next trait">&gt;</button>
             <div class="trait-name"></div>
             <div class="trait-desc"></div>
-            <button id="trait-confirm" class="primary-pixel-btn" type="button">Adopt this trait</button>
+            <button id="trait-confirm" class="pixel-button" type="button">Adopt this trait</button>
           </div>
         </div>
       </section>
@@ -60,43 +60,32 @@
             <div id="scene2-label" class="scene2-label">Unbox the cat</div>
             <div id="scene2-msg1" class="scene2-msg1 hidden">You found your new friend.</div>
             <div id="scene2-msg2" class="scene2-msg2 hidden">A bath might help.</div>
-            <button id="btn-bath" class="scene2-next hidden" type="button">To bathroom</button>
+            <button id="btn-bath" class="pixel-button scene2-next hidden" type="button">To bathroom</button>
           </div>
-        </div>
-      </section>
-
-      <section id="bathroom" class="screen hidden">
-        <div class="bathroom-canvas">
-          <img src="assets/bathroom/bathroom.png" class="bathroom-bg" alt="" />
-          <button id="btn-bathroom-back" class="scene-back" type="button">Back</button>
-          <img id="bath-cat" src="assets/bathroom/idlecat2.png" class="bathroom-cat" alt="Cat in bathroom" />
-          <div id="bath-title" class="bathroom-title">Bath time</div>
-          <div id="bath-copy" class="bathroom-copy">Clean fur, wounded pride.</div>
-          <button id="btn-bathroom-clean" class="primary-pixel-btn bathroom-action" type="button">Scrub</button>
-          <button id="btn-try-playing" class="primary-pixel-btn bathroom-try hidden" type="button">Back to room</button>
         </div>
       </section>
 
       <section id="main" class="screen hidden">
         <div class="main-canvas">
-          <img class="main-bg" src="assets/main/main_bg.png" alt="" />
-          <img class="main-top" src="assets/main/top_ui.png" alt="" />
+          <img id="main-bg-img" class="main-bg" src="assets/main/lightbgmain.png" alt="" />
+          <div class="main-vignette"></div>
 
-          <div class="top-status">
-            <span id="day-label">Day 1</span>
-            <span id="mood-label">Cozy</span>
-          </div>
+          <header class="main-header panel">
+            <div class="cat-title-block">
+              <span id="main-cat-name" class="cat-name">Miso</span>
+              <span id="main-trait-label" class="trait-badge">Shy</span>
+            </div>
+            <div class="header-chip-row">
+              <span id="day-label" class="header-chip">Day 1</span>
+              <span id="phase-label" class="header-chip">Morning</span>
+              <span id="mood-label" class="header-chip mood-chip">Calm</span>
+            </div>
+            <button id="btn-phase-toggle" class="pixel-button small" type="button">Cycle light</button>
+          </header>
 
-          <button id="btn-profile" class="main-btn main-profile" type="button" aria-label="Profile"></button>
-          <button id="btn-settings" class="main-btn main-settings" type="button" aria-label="Settings"></button>
-          <button id="btn-exit" class="main-btn main-exit" type="button" aria-label="Exit"></button>
-          <button id="btn-credits" class="main-btn main-credits" type="button" aria-label="Credits"></button>
-          <button id="btn-playroom" class="main-btn main-playroom" type="button" aria-label="Playroom"></button>
-          <button id="btn-bathroom" class="main-btn main-bathroom" type="button" aria-label="Bathroom"></button>
-
-          <section class="stat-panel" aria-label="Cat status">
-            <h2 id="main-cat-name">Miso</h2>
-            <p id="main-cat-mood">Settling in.</p>
+          <section class="stat-panel panel" aria-label="Cat status">
+            <h2>Status</h2>
+            <p id="main-cat-mood" class="mood-copy">Settling in.</p>
             <div id="stat-list" class="stat-list"></div>
           </section>
 
@@ -105,26 +94,79 @@
             <div id="cat-feedback" class="cat-feedback hidden"></div>
           </div>
 
+          <aside class="menu-panel panel" aria-label="Navigation">
+            <button id="btn-profile" class="menu-btn pixel-button" type="button">Profile</button>
+            <button id="btn-playroom" class="menu-btn pixel-button" type="button">Playroom</button>
+            <button id="btn-bathroom" class="menu-btn pixel-button" type="button">Bathroom</button>
+            <button id="btn-settings" class="menu-btn pixel-button" type="button">Settings</button>
+            <button id="btn-credits" class="menu-btn pixel-button" type="button">Credits</button>
+          </aside>
+
           <div id="alert-banner" class="alert-banner hidden"></div>
 
-          <div class="action-panel" aria-label="Care actions">
-            <button id="btn-feed" class="action-btn" type="button" title="Feed">
+          <div class="action-panel panel" aria-label="Care actions">
+            <button id="btn-feed" class="action-btn pixel-button" type="button" title="Feed">
               <span class="action-glyph">+</span>
               <span>Feed</span>
             </button>
-            <button id="btn-play" class="action-btn" type="button" title="Play">
-              <span class="action-glyph">></span>
+            <button id="btn-play" class="action-btn pixel-button" type="button" title="Play">
+              <span class="action-glyph">&gt;</span>
               <span>Play</span>
             </button>
-            <button id="btn-bath-main" class="action-btn" type="button" title="Bath">
+            <button id="btn-bath-main" class="action-btn pixel-button" type="button" title="Bath">
               <span class="action-glyph">~</span>
               <span>Bath</span>
             </button>
-            <button id="btn-sleep" class="action-btn" type="button" title="Sleep">
+            <button id="btn-sleep" class="action-btn pixel-button" type="button" title="Sleep">
               <span class="action-glyph">Zz</span>
               <span>Sleep</span>
             </button>
           </div>
+        </div>
+      </section>
+
+      <section id="playroom" class="screen hidden">
+        <div class="playroom-canvas">
+          <div class="playroom-room">
+            <img class="playroom-bg" src="assets/playroom/Room1 1.png" alt="" />
+            <img class="playroom-cat" src="assets/playroom/cat_idle.gif" alt="Cat in playroom" />
+            <img id="play-ball" class="toy toy-ball hidden" src="assets/playroom/PinkBall.gif" alt="Pink ball" />
+            <img id="play-mouse" class="toy toy-mouse hidden" src="assets/playroom/Mouse.gif" alt="Mouse toy" />
+          </div>
+          <section class="playroom-panel panel">
+            <div>
+              <h2>Playroom</h2>
+              <p id="playroom-instruction">Toss the ball or start a mouse chase, then tap the moving toy.</p>
+            </div>
+            <div class="score-box">
+              <span>Score</span>
+              <strong id="play-score">0</strong>
+            </div>
+            <div class="play-actions">
+              <button id="btn-playroom-toy" class="pixel-button" type="button">Toss toy</button>
+              <button id="btn-mouse-chase" class="pixel-button" type="button">Mouse chase</button>
+              <button id="btn-playroom-back" class="pixel-button" type="button">Back</button>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="bathroom" class="screen hidden">
+        <div class="bathroom-canvas">
+          <img src="assets/bathroom/bathroom.png" class="bathroom-bg" alt="" />
+          <button id="btn-bathroom-back" class="pixel-button scene-back" type="button">Back</button>
+          <section class="bath-panel panel">
+            <h2 id="bath-title">Bath time</h2>
+            <p id="bath-copy">A warm scrub restores the sparkle.</p>
+            <div class="bath-stage">
+              <img id="bath-cat" src="assets/bathroom/idlecat2.png" class="bathroom-cat" alt="Cat in bathroom" />
+              <div id="bath-progress" class="bath-progress"><span></span></div>
+            </div>
+            <div class="bath-actions">
+              <button id="btn-bathroom-clean" class="pixel-button" type="button">Start bath</button>
+              <button id="btn-try-playing" class="pixel-button hidden" type="button">Back home</button>
+            </div>
+          </section>
         </div>
       </section>
 
@@ -135,6 +177,7 @@
           <div id="profile-adopted" class="profile-adopted"></div>
           <div id="profile-name" class="profile-name"></div>
           <div id="profile-trait" class="profile-trait"></div>
+          <div id="profile-mood" class="profile-mood"></div>
 
           <img id="h-happiness-0" class="heart" alt="" />
           <img id="h-happiness-1" class="heart" alt="" />
@@ -153,19 +196,6 @@
           <img id="h-energy-2" class="heart" alt="" />
         </div>
       </section>
-
-      <section id="playroom" class="screen hidden">
-        <div class="playroom-canvas">
-          <img class="playroom-bg" src="assets/playroom/Playroom.png" alt="" />
-          <button id="btn-playroom-back" class="scene-back" type="button">Back</button>
-          <img class="playroom-cat" src="assets/playroom/cat_idle.gif" alt="Cat in playroom" />
-          <div class="playroom-panel">
-            <h2>Playroom</h2>
-            <p>Toy box systems are planned. For now, a quick game still cheers the cat up.</p>
-            <button id="btn-playroom-toy" class="primary-pixel-btn" type="button">Toss toy</button>
-          </div>
-        </div>
-      </section>
     </div>
   </div>
 
@@ -174,19 +204,33 @@
       <h2 id="name-title" class="modal-title">Name your cat</h2>
       <input id="name-input" type="text" maxlength="16" placeholder="Miso" autocomplete="off" />
       <div class="modal-action">
-        <button id="name-cancel" type="button">Cancel</button>
-        <button id="name-ok" type="button">OK</button>
+        <button id="name-cancel" class="pixel-button" type="button">Cancel</button>
+        <button id="name-ok" class="pixel-button" type="button">OK</button>
       </div>
     </div>
   </section>
 
-  <section id="planned-modal" class="modal hidden" aria-modal="true" role="dialog" aria-labelledby="planned-title">
-    <div class="modal-box planned-box">
-      <h2 id="planned-title" class="modal-title">Planned feature</h2>
-      <p id="planned-copy"></p>
+  <section id="settings-modal" class="modal hidden" aria-modal="true" role="dialog" aria-labelledby="settings-title">
+    <div class="modal-box settings-box">
+      <h2 id="settings-title" class="modal-title">Settings</h2>
+      <div class="settings-grid">
+        <button id="settings-mute" class="pixel-button" type="button">Mute audio</button>
+        <button id="settings-phase" class="pixel-button" type="button">Cycle light</button>
+        <button id="settings-reset" class="pixel-button danger" type="button">Reset save</button>
+      </div>
       <div class="modal-action">
-        <button id="planned-extra" class="hidden" type="button">Reset demo</button>
-        <button id="planned-close" type="button">Close</button>
+        <button id="settings-close" class="pixel-button" type="button">Close</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="credits-modal" class="modal hidden" aria-modal="true" role="dialog" aria-labelledby="credits-title">
+    <div class="modal-box credits-box">
+      <h2 id="credits-title" class="modal-title">MeowDeck</h2>
+      <p>Created as a pixel-art virtual pet prototype.</p>
+      <p>Built with HTML, CSS, vanilla JavaScript, LocalStorage, and the pixel assets in this repository.</p>
+      <div class="modal-action">
+        <button id="credits-close" class="pixel-button" type="button">Close</button>
       </div>
     </div>
   </section>

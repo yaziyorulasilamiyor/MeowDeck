@@ -1,4 +1,4 @@
-// MeowDeck - vanilla web virtual pet prototype.
+// MeowDeck v2 - vanilla JavaScript virtual pet loop.
 
 if (!window.db) {
   window.db = {
@@ -28,12 +28,16 @@ if (!window.db) {
 
 window.addEventListener("DOMContentLoaded", () => {
   const ASSETS = {
+    dayBg: "assets/main/lightbgmain.png",
+    nightBg: "assets/main/DarkBg.png",
     idleCat: "assets/main/cat_idle.gif",
     sleepingCat: "assets/playroom/cat_sleeping.gif",
     bathIdle: "assets/bathroom/idlecat2.png",
     bathHappy: "assets/bathroom/cathappy.png",
     bathAngry: "assets/bathroom/catangry.png",
+    bathAnim: "assets/bathroom/catbath.gif",
     sceneDirty: "assets/scene2/dirtycat.png",
+    sceneBox: "assets/scene2/anim.gif",
     heartFull: "assets/ui/dolukalp.png",
     heartEmpty: "assets/ui/boskalp.png",
     music: "assets/audio/music_bg.mp3",
@@ -47,18 +51,11 @@ window.addEventListener("DOMContentLoaded", () => {
   };
 
   const STAT_META = [
-    { key: "happiness", label: "Joy" },
-    { key: "hunger", label: "Fullness" },
+    { key: "happiness", label: "Happy" },
+    { key: "hunger", label: "Full" },
     { key: "cleanliness", label: "Clean" },
     { key: "energy", label: "Energy" },
   ];
-
-  const ZERO_MESSAGES = {
-    happiness: "Your cat needs attention.",
-    hunger: "Your cat is hungry.",
-    cleanliness: "Your cat feels messy.",
-    energy: "Your cat is exhausted.",
-  };
 
   const TRAITS = [
     { id: "shy", title: "Shy", desc: "Soft paws, slow trust.", src: "assets/traits/shy.gif" },
@@ -75,38 +72,46 @@ window.addEventListener("DOMContentLoaded", () => {
   const MOODS = {
     hungry: {
       label: "Hungry",
-      copy: "The bowl has become a personal matter.",
+      copy: "The bowl is looking heartbreakingly empty.",
       asset: ASSETS.idleCat,
     },
     tired: {
       label: "Tired",
-      copy: "Those paws are running on fumes.",
+      copy: "Tiny paws need a serious nap.",
       asset: ASSETS.sleepingCat,
     },
     dirty: {
-      label: "Messy",
-      copy: "A bath would restore some dignity.",
+      label: "Dirty",
+      copy: "The fur situation is getting dramatic.",
       asset: ASSETS.idleCat,
     },
-    lonely: {
-      label: "Lonely",
-      copy: "A little play would go a long way.",
+    sad: {
+      label: "Sad",
+      copy: "A little attention would warm the room.",
       asset: ASSETS.idleCat,
     },
     happy: {
       label: "Happy",
-      copy: "Purring like the room is theirs.",
+      copy: "Purring like the sun belongs here.",
       asset: ASSETS.idleCat,
     },
-    cozy: {
-      label: "Cozy",
-      copy: "Needs are balanced for now.",
+    calm: {
+      label: "Calm",
+      copy: "Cozy, balanced, and quietly watching.",
       asset: ASSETS.idleCat,
     },
   };
 
-  const DECAY_INTERVAL_MS = 90 * 1000;
-  const DECAY_ORDER = ["hunger", "energy", "cleanliness", "happiness", "hunger"];
+  const ZERO_MESSAGES = {
+    happiness: "Happiness is empty. Try playing.",
+    hunger: "Fullness is empty. Time for food.",
+    cleanliness: "Cleanliness is empty. Bath time.",
+    energy: "Energy is empty. Sleep will help.",
+  };
+
+  const PHASES = ["Morning", "Evening", "Night"];
+  const DECAY_INTERVAL_MS = 110 * 1000;
+  const DECAY_ORDER = ["hunger", "energy", "happiness", "cleanliness", "hunger"];
 
   const el = {
     screens: {
@@ -114,16 +119,15 @@ window.addEventListener("DOMContentLoaded", () => {
       select: document.getElementById("select"),
       traits: document.getElementById("traits"),
       scene2: document.getElementById("scene2"),
-      bathroom: document.getElementById("bathroom"),
       main: document.getElementById("main"),
-      profile: document.getElementById("profile"),
       playroom: document.getElementById("playroom"),
+      bathroom: document.getElementById("bathroom"),
+      profile: document.getElementById("profile"),
     },
     toast: document.getElementById("toast"),
     audioBtn: document.getElementById("btn-audio"),
-    catGrid: document.getElementById("cat-grid"),
-    cursor: document.getElementById("cursor"),
     cats: Array.from(document.querySelectorAll(".cat")),
+    cursor: document.getElementById("cursor"),
     traitPreview: document.getElementById("trait-preview"),
     traitName: document.querySelector("#traits .trait-name"),
     traitDesc: document.querySelector("#traits .trait-desc"),
@@ -139,16 +143,15 @@ window.addEventListener("DOMContentLoaded", () => {
     scene2Msg1: document.getElementById("scene2-msg1"),
     scene2Msg2: document.getElementById("scene2-msg2"),
     scene2Bath: document.getElementById("btn-bath"),
-    bathCat: document.getElementById("bath-cat"),
-    bathTitle: document.getElementById("bath-title"),
-    bathCopy: document.getElementById("bath-copy"),
-    bathClean: document.getElementById("btn-bathroom-clean"),
-    bathBack: document.getElementById("btn-bathroom-back"),
-    bathDone: document.getElementById("btn-try-playing"),
+    mainScreen: document.getElementById("main"),
+    mainBg: document.getElementById("main-bg-img"),
     mainName: document.getElementById("main-cat-name"),
+    mainTrait: document.getElementById("main-trait-label"),
     mainMood: document.getElementById("main-cat-mood"),
     moodLabel: document.getElementById("mood-label"),
+    phaseLabel: document.getElementById("phase-label"),
     dayLabel: document.getElementById("day-label"),
+    phaseToggle: document.getElementById("btn-phase-toggle"),
     statList: document.getElementById("stat-list"),
     mainCat: document.getElementById("main-cat-img"),
     catZone: document.querySelector(".cat-zone"),
@@ -156,7 +159,6 @@ window.addEventListener("DOMContentLoaded", () => {
     alertBanner: document.getElementById("alert-banner"),
     btnProfile: document.getElementById("btn-profile"),
     btnSettings: document.getElementById("btn-settings"),
-    btnExit: document.getElementById("btn-exit"),
     btnCredits: document.getElementById("btn-credits"),
     btnPlayroom: document.getElementById("btn-playroom"),
     btnBathroom: document.getElementById("btn-bathroom"),
@@ -164,17 +166,32 @@ window.addEventListener("DOMContentLoaded", () => {
     btnPlay: document.getElementById("btn-play"),
     btnBathMain: document.getElementById("btn-bath-main"),
     btnSleep: document.getElementById("btn-sleep"),
+    playroomBack: document.getElementById("btn-playroom-back"),
+    playroomToy: document.getElementById("btn-playroom-toy"),
+    mouseChase: document.getElementById("btn-mouse-chase"),
+    playBall: document.getElementById("play-ball"),
+    playMouse: document.getElementById("play-mouse"),
+    playScore: document.getElementById("play-score"),
+    playInstruction: document.getElementById("playroom-instruction"),
+    bathCat: document.getElementById("bath-cat"),
+    bathTitle: document.getElementById("bath-title"),
+    bathCopy: document.getElementById("bath-copy"),
+    bathProgress: document.getElementById("bath-progress"),
+    bathClean: document.getElementById("btn-bathroom-clean"),
+    bathBack: document.getElementById("btn-bathroom-back"),
+    bathDone: document.getElementById("btn-try-playing"),
     profileClose: document.getElementById("btn-profile-close"),
     profileAdopted: document.getElementById("profile-adopted"),
     profileName: document.getElementById("profile-name"),
     profileTrait: document.getElementById("profile-trait"),
-    playroomBack: document.getElementById("btn-playroom-back"),
-    playroomToy: document.getElementById("btn-playroom-toy"),
-    plannedModal: document.getElementById("planned-modal"),
-    plannedTitle: document.getElementById("planned-title"),
-    plannedCopy: document.getElementById("planned-copy"),
-    plannedClose: document.getElementById("planned-close"),
-    plannedExtra: document.getElementById("planned-extra"),
+    profileMood: document.getElementById("profile-mood"),
+    settingsModal: document.getElementById("settings-modal"),
+    settingsMute: document.getElementById("settings-mute"),
+    settingsPhase: document.getElementById("settings-phase"),
+    settingsReset: document.getElementById("settings-reset"),
+    settingsClose: document.getElementById("settings-close"),
+    creditsModal: document.getElementById("credits-modal"),
+    creditsClose: document.getElementById("credits-close"),
   };
 
   const app = {
@@ -190,31 +207,35 @@ window.addEventListener("DOMContentLoaded", () => {
     feedbackTimer: null,
     transientTimer: null,
     transientMood: null,
+    toyTimer: null,
+    mouseTimer: null,
+    bathTimer: null,
+    bathRunning: false,
     bathComplete: false,
     bathMode: "care",
   };
 
   const Sound = {
     music: null,
-    muted: false,
+    muted: localStorage.getItem("meowdeck-muted") === "true",
     ctx: null,
     playMusic() {
       if (this.muted || this.music) return;
       const audio = new Audio(ASSETS.music);
       audio.loop = true;
-      audio.volume = 0.24;
+      audio.volume = 0.2;
       audio.muted = this.muted;
       audio.play().catch(() => {});
       this.music = audio;
     },
-    toggleMute() {
-      this.muted = !this.muted;
+    setMuted(value) {
+      this.muted = Boolean(value);
+      localStorage.setItem("meowdeck-muted", String(this.muted));
       if (this.music) this.music.muted = this.muted;
-      if (el.audioBtn) {
-        el.audioBtn.textContent = this.muted ? "Muted" : "Sound";
-        el.audioBtn.setAttribute("aria-pressed", String(this.muted));
-        el.audioBtn.title = this.muted ? "Unmute audio" : "Mute audio";
-      }
+      renderAudioLabels();
+    },
+    toggleMute() {
+      this.setMuted(!this.muted);
     },
     blip(kind = "soft") {
       if (this.muted) return;
@@ -224,7 +245,7 @@ window.addEventListener("DOMContentLoaded", () => {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       const now = this.ctx.currentTime;
-      const pitch = kind === "alert" ? 180 : kind === "happy" ? 520 : 360;
+      const pitch = kind === "alert" ? 170 : kind === "happy" ? 530 : 360;
       osc.type = "square";
       osc.frequency.setValueAtTime(pitch, now);
       gain.gain.setValueAtTime(0.035, now);
@@ -253,14 +274,34 @@ window.addEventListener("DOMContentLoaded", () => {
     return Number.isFinite(parsed) ? parsed : Date.now();
   }
 
+  function realWorldPhase() {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 17) return "Morning";
+    if (hour >= 17 && hour < 21) return "Evening";
+    return "Night";
+  }
+
+  function computeCalendarDay(timestamp) {
+    const adopted = parseTime(timestamp || Date.now());
+    return Math.max(1, Math.floor((Date.now() - adopted) / 86400000) + 1);
+  }
+
+  function normalizePhase(value) {
+    return PHASES.includes(value) ? value : realWorldPhase();
+  }
+
   function normalizeCat(raw) {
     if (!raw) return null;
+    const adopted = parseTime(raw.adopted_at || raw.created_at || Date.now());
     return {
       id: raw.id == null ? undefined : raw.id,
       name: cleanName(raw.name),
       avatar: raw.avatar || "white",
       personality: raw.personality || null,
-      adopted_at: parseTime(raw.adopted_at || raw.created_at || Date.now()),
+      adopted_at: adopted,
+      day: Math.max(1, Number(raw.day) || computeCalendarDay(adopted)),
+      phase: normalizePhase(raw.phase),
+      playScore: Math.max(0, Number(raw.playScore) || 0),
       happiness: clamp(raw.happiness ?? raw.stats?.happiness ?? DEFAULT_STATS.happiness),
       hunger: clamp(raw.hunger ?? raw.stats?.hunger ?? DEFAULT_STATS.hunger),
       cleanliness: clamp(raw.cleanliness ?? raw.stats?.cleanliness ?? DEFAULT_STATS.cleanliness),
@@ -274,6 +315,9 @@ window.addEventListener("DOMContentLoaded", () => {
       avatar: cat.avatar || "white",
       personality: cat.personality || null,
       adopted_at: cat.adopted_at || Date.now(),
+      day: Math.max(1, Number(cat.day) || 1),
+      phase: normalizePhase(cat.phase),
+      playScore: Math.max(0, Number(cat.playScore) || 0),
       happiness: clamp(cat.happiness),
       cleanliness: clamp(cat.cleanliness),
       hunger: clamp(cat.hunger),
@@ -295,6 +339,9 @@ window.addEventListener("DOMContentLoaded", () => {
       name: "Miso",
       avatar: "white",
       adopted_at: Date.now(),
+      day: 1,
+      phase: realWorldPhase(),
+      playScore: 0,
       ...DEFAULT_STATS,
     });
     const next = normalizeCat({ ...seed, ...patch });
@@ -314,12 +361,47 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function applyScale() {
-    const scale = Math.min(window.innerWidth / 1024, window.innerHeight / 1024, 1);
+    const safeW = Math.max(320, window.innerWidth - 24);
+    const safeH = Math.max(320, window.innerHeight - 24);
+    const scale = Math.min(safeW / 960, safeH / 720, 1);
     document.documentElement.style.setProperty("--ui-scale", String(scale));
   }
 
   function wait(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  function formatDate(timestamp) {
+    try {
+      return new Intl.DateTimeFormat(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(new Date(timestamp));
+    } catch {
+      return new Date(timestamp).toLocaleString();
+    }
+  }
+
+  function getTraitTitle(id) {
+    return TRAITS.find((trait) => trait.id === id)?.title || "Mystery";
+  }
+
+  function computeMood(cat) {
+    if (!cat) return "calm";
+    if (cat.hunger <= 0) return "hungry";
+    if (cat.energy <= 0) return "tired";
+    if (cat.cleanliness <= 0) return "dirty";
+    if (cat.happiness <= 0) return "sad";
+    const total = cat.happiness + cat.hunger + cat.cleanliness + cat.energy;
+    if (total >= 10 && cat.happiness >= 2) return "happy";
+    return "calm";
+  }
+
+  function currentMoodKey() {
+    return app.transientMood || computeMood(app.cat);
   }
 
   function showScreen(name) {
@@ -332,7 +414,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const next = el.screens[name];
     if (next) {
       next.classList.add("screen-enter");
-      window.setTimeout(() => next.classList.remove("screen-enter"), 260);
+      window.setTimeout(() => next.classList.remove("screen-enter"), 230);
     }
 
     app.currentScreen = name;
@@ -341,6 +423,7 @@ window.addEventListener("DOMContentLoaded", () => {
       startDecayLoop();
     }
     if (name === "profile") renderProfile();
+    if (name === "playroom") renderPlayroom();
   }
 
   function showToast(message, ms = 1800) {
@@ -366,66 +449,49 @@ window.addEventListener("DOMContentLoaded", () => {
     window.clearTimeout(app.feedbackTimer);
     el.catFeedback.textContent = message;
     el.catFeedback.classList.remove("hidden");
-    app.feedbackTimer = window.setTimeout(() => el.catFeedback.classList.add("hidden"), 1500);
+    app.feedbackTimer = window.setTimeout(() => el.catFeedback.classList.add("hidden"), 1350);
   }
 
   function flashButton(button) {
     if (!button) return;
     button.classList.add("is-active");
-    window.setTimeout(() => button.classList.remove("is-active"), 260);
+    window.setTimeout(() => button.classList.remove("is-active"), 250);
   }
 
-  function formatDate(timestamp) {
-    try {
-      return new Intl.DateTimeFormat(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-      }).format(new Date(timestamp));
-    } catch {
-      return new Date(timestamp).toLocaleString();
+  function renderAudioLabels() {
+    const text = Sound.muted ? "Unmute audio" : "Mute audio";
+    if (el.audioBtn) {
+      el.audioBtn.textContent = Sound.muted ? "Muted" : "Sound";
+      el.audioBtn.setAttribute("aria-pressed", String(Sound.muted));
+      el.audioBtn.title = text;
     }
+    if (el.settingsMute) el.settingsMute.textContent = text;
   }
 
-  function getTraitTitle(id) {
-    return TRAITS.find((trait) => trait.id === id)?.title || "Mystery";
-  }
-
-  function computeDay(cat) {
-    const adopted = parseTime(cat?.adopted_at || Date.now());
-    return Math.max(1, Math.floor((Date.now() - adopted) / 86400000) + 1);
-  }
-
-  function computeMood(cat) {
-    if (!cat) return "cozy";
-    if (cat.hunger <= 0) return "hungry";
-    if (cat.energy <= 0) return "tired";
-    if (cat.cleanliness <= 0) return "dirty";
-    if (cat.happiness <= 0) return "lonely";
-    if (cat.happiness >= 3 && cat.hunger >= 2 && cat.cleanliness >= 2 && cat.energy >= 2) return "happy";
-    return "cozy";
-  }
-
-  function currentMoodKey() {
-    return app.transientMood || computeMood(app.cat);
+  function backgroundForPhase(phase) {
+    return phase === "Morning" ? ASSETS.dayBg : ASSETS.nightBg;
   }
 
   function renderMain() {
     if (!app.cat) return;
     const moodKey = currentMoodKey();
-    const mood = MOODS[moodKey] || MOODS.cozy;
+    const mood = MOODS[moodKey] || MOODS.calm;
+    const phaseClass = `phase-${String(app.cat.phase).toLowerCase()}`;
 
+    setSafeImage(el.mainBg, backgroundForPhase(app.cat.phase), ASSETS.dayBg);
+    setSafeImage(el.mainCat, mood.asset, ASSETS.idleCat);
+
+    if (el.mainScreen) {
+      el.mainScreen.classList.remove("phase-morning", "phase-evening", "phase-night");
+      el.mainScreen.classList.add(phaseClass);
+    }
     if (el.mainName) el.mainName.textContent = app.cat.name;
+    if (el.mainTrait) el.mainTrait.textContent = getTraitTitle(app.cat.personality);
     if (el.mainMood) el.mainMood.textContent = mood.copy;
     if (el.moodLabel) el.moodLabel.textContent = mood.label;
-    if (el.dayLabel) el.dayLabel.textContent = `Day ${computeDay(app.cat)}`;
-
-    setSafeImage(el.mainCat, mood.asset);
-    if (el.catZone) {
-      el.catZone.className = `cat-zone is-${moodKey}`;
-    }
+    if (el.phaseLabel) el.phaseLabel.textContent = app.cat.phase;
+    if (el.dayLabel) el.dayLabel.textContent = `Day ${app.cat.day}`;
+    if (el.catZone) el.catZone.className = `cat-zone is-${moodKey}`;
 
     renderStatList();
   }
@@ -459,9 +525,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
   function renderProfile() {
     if (!app.cat) return;
+    const mood = MOODS[computeMood(app.cat)] || MOODS.calm;
     if (el.profileAdopted) el.profileAdopted.textContent = formatDate(app.cat.adopted_at);
     if (el.profileName) el.profileName.textContent = app.cat.name;
     if (el.profileTrait) el.profileTrait.textContent = getTraitTitle(app.cat.personality);
+    if (el.profileMood) el.profileMood.textContent = `${mood.label}: ${mood.copy}`;
 
     setHearts("happiness", app.cat.happiness);
     setHearts("cleanliness", app.cat.cleanliness);
@@ -495,19 +563,32 @@ window.addEventListener("DOMContentLoaded", () => {
 
     if (app.currentScreen === "main") renderMain();
     if (app.currentScreen === "profile") renderProfile();
+    if (app.currentScreen === "playroom") renderPlayroom();
     if (options.message) showToast(options.message);
     return cat;
   }
 
-  function setTransientMood(moodKey, message, duration = 1600) {
+  function setTransientMood(moodKey, message, duration = 1400) {
     window.clearTimeout(app.transientTimer);
     app.transientMood = moodKey;
-    renderMain();
+    if (app.currentScreen === "main") renderMain();
     if (message) showFeedback(message);
     app.transientTimer = window.setTimeout(() => {
       app.transientMood = null;
-      renderMain();
+      if (app.currentScreen === "main") renderMain();
     }, duration);
+  }
+
+  async function cyclePhase() {
+    if (!app.cat) return;
+    const currentIndex = PHASES.indexOf(app.cat.phase);
+    const nextPhase = PHASES[(currentIndex + 1) % PHASES.length];
+    const nextDay = app.cat.phase === "Night" && nextPhase === "Morning"
+      ? app.cat.day + 1
+      : app.cat.day;
+    await saveCat({ phase: nextPhase, day: nextDay });
+    renderMain();
+    showToast(`${nextPhase} light set.`);
   }
 
   async function doFeed() {
@@ -515,10 +596,10 @@ window.addEventListener("DOMContentLoaded", () => {
     flashButton(el.btnFeed);
     Sound.blip("happy");
     await changeStats(
-      { hunger: 2, happiness: 1, cleanliness: -1 },
-      { message: "Snack served. Crumbs detected." },
+      { hunger: 1, happiness: app.cat.hunger <= 1 ? 1 : 0, cleanliness: -1 },
+      { message: "Breakfast crumbs everywhere." },
     );
-    setTransientMood("happy", "Nom.", 1500);
+    setTransientMood("happy", "Nom.", 1300);
   }
 
   async function doPlay(sourceButton = el.btnPlay) {
@@ -526,20 +607,20 @@ window.addEventListener("DOMContentLoaded", () => {
     flashButton(sourceButton);
     if (app.cat.energy <= 0) {
       showAlert("Too tired to play right now.", true);
-      setTransientMood("tired", "Sleepy.", 1500);
+      setTransientMood("tired", "Sleepy.", 1300);
       return;
     }
     if (app.cat.hunger <= 0) {
-      showAlert("A snack should come before play.", true);
-      setTransientMood("hungry", "Food first.", 1500);
+      showAlert("Food first, then play.", true);
+      setTransientMood("hungry", "Snack?", 1300);
       return;
     }
     Sound.blip("happy");
     await changeStats(
-      { happiness: 2, energy: -1, hunger: -1 },
-      { message: "Play session complete." },
+      { happiness: 1, energy: -1, hunger: -1 },
+      { message: "Playtime boosted happiness." },
     );
-    setTransientMood("happy", "Zoom.", 1700);
+    setTransientMood("happy", "Zoom.", 1400);
   }
 
   async function doSleep() {
@@ -548,46 +629,29 @@ window.addEventListener("DOMContentLoaded", () => {
     Sound.blip("soft");
     await changeStats(
       { energy: 2, hunger: -1 },
-      { message: "A short nap helped." },
+      { message: "A nap moved time along." },
     );
-    setTransientMood("tired", "Zzz.", 1900);
+    await cyclePhase();
+    setTransientMood("tired", "Zzz.", 1500);
   }
 
   function doBathMain() {
     flashButton(el.btnBathMain);
     openBathroom("care");
-    showToast("Scrub to finish the bath.");
-  }
-
-  async function completeBath() {
-    if (!app.cat || app.bathComplete) return;
-    app.bathComplete = true;
-    if (el.bathClean) el.bathClean.classList.add("hidden");
-    if (el.bathDone) el.bathDone.classList.remove("hidden");
-    if (el.bathTitle) el.bathTitle.textContent = "All clean";
-    if (el.bathCopy) el.bathCopy.textContent = "Cleanliness up. Patience down.";
-    setSafeImage(el.bathCat, ASSETS.bathAngry, ASSETS.bathIdle);
-    Sound.blip("alert");
-    await changeStats(
-      { cleanliness: 3, happiness: -1, energy: -1 },
-      { message: "Bath saved." },
-    );
+    showToast("Start the bath when ready.");
   }
 
   function startDecayLoop() {
     if (app.decayTimer) return;
     app.decayTimer = window.setInterval(async () => {
-      if (app.currentScreen !== "main" || !app.cat) return;
-
+      if (!["main", "playroom"].includes(app.currentScreen) || !app.cat) return;
       let key = DECAY_ORDER[app.decayStep % DECAY_ORDER.length];
       app.decayStep += 1;
       if (app.cat[key] <= 0) {
         key = DECAY_ORDER.find((candidate) => app.cat[candidate] > 0);
       }
       if (!key) return;
-
       await changeStats({ [key]: -1 });
-      renderMain();
     }, DECAY_INTERVAL_MS);
   }
 
@@ -650,6 +714,9 @@ window.addEventListener("DOMContentLoaded", () => {
       avatar: "white",
       personality: trait.id,
       adopted_at: app.cat?.adopted_at || Date.now(),
+      day: app.cat?.day || 1,
+      phase: app.cat?.phase || realWorldPhase(),
+      playScore: app.cat?.playScore || 0,
       ...DEFAULT_STATS,
     });
     showNameModal(app.cat?.name || "Miso");
@@ -675,7 +742,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function resetScene2() {
-    setSafeImage(el.scene2Cat, "assets/scene2/anim.gif", ASSETS.idleCat);
+    setSafeImage(el.scene2Cat, ASSETS.sceneBox, ASSETS.idleCat);
     if (el.scene2Cat) {
       el.scene2Cat.style.left = "158px";
       el.scene2Cat.style.top = "226px";
@@ -705,18 +772,6 @@ window.addEventListener("DOMContentLoaded", () => {
     Sound.blip("happy");
   }
 
-  function openBathroom(mode) {
-    app.bathMode = mode;
-    app.bathComplete = false;
-    setSafeImage(el.bathCat, ASSETS.bathIdle, ASSETS.idleCat);
-    if (el.bathTitle) el.bathTitle.textContent = mode === "intro" ? "First bath" : "Bath time";
-    if (el.bathCopy) el.bathCopy.textContent = mode === "intro" ? "Fresh box, dusty paws." : "Clean fur, wounded pride.";
-    el.bathClean?.classList.remove("hidden");
-    el.bathDone?.classList.add("hidden");
-    el.bathBack?.classList.toggle("hidden", mode === "intro");
-    showScreen("bathroom");
-  }
-
   function showMain(message) {
     showScreen("main");
     if (message) showToast(message);
@@ -733,19 +788,113 @@ window.addEventListener("DOMContentLoaded", () => {
 
   function openPlayroom() {
     showScreen("playroom");
-    showToast("Playroom prototype loaded.");
+    showToast("Playroom ready.");
   }
 
-  function openPlanned(title, copy, allowReset = false) {
-    if (!el.plannedModal) return;
-    if (el.plannedTitle) el.plannedTitle.textContent = title;
-    if (el.plannedCopy) el.plannedCopy.textContent = copy;
-    el.plannedExtra?.classList.toggle("hidden", !allowReset);
-    el.plannedModal.classList.remove("hidden");
+  function renderPlayroom() {
+    if (el.playScore && app.cat) el.playScore.textContent = String(app.cat.playScore || 0);
   }
 
-  function closePlanned() {
-    el.plannedModal?.classList.add("hidden");
+  function launchToy(kind) {
+    const toy = kind === "mouse" ? el.playMouse : el.playBall;
+    if (!toy) return;
+    window.clearTimeout(kind === "mouse" ? app.mouseTimer : app.toyTimer);
+    toy.classList.remove("hidden", "is-moving");
+    toy.style.pointerEvents = "auto";
+    void toy.offsetWidth;
+    toy.classList.add("is-moving");
+    const timer = window.setTimeout(() => {
+      toy.classList.add("hidden");
+      toy.classList.remove("is-moving");
+    }, kind === "mouse" ? 2200 : 1900);
+    if (kind === "mouse") app.mouseTimer = timer;
+    else app.toyTimer = timer;
+    if (el.playInstruction) {
+      el.playInstruction.textContent = kind === "mouse"
+        ? "Tap the mouse before it crosses the room."
+        : "Tap the rolling ball before it stops.";
+    }
+  }
+
+  async function hitToy(kind) {
+    const toy = kind === "mouse" ? el.playMouse : el.playBall;
+    if (!toy || toy.classList.contains("hidden")) return;
+    toy.classList.add("hidden");
+    toy.classList.remove("is-moving");
+    Sound.blip("happy");
+    const nextScore = (app.cat?.playScore || 0) + (kind === "mouse" ? 2 : 1);
+    await saveCat({ playScore: nextScore });
+    renderPlayroom();
+    showToast(kind === "mouse" ? "Mouse caught." : "Nice catch.");
+    if (nextScore % 3 === 0) {
+      await changeStats({ happiness: 1, energy: -1, hunger: -1 });
+    }
+  }
+
+  function openBathroom(mode) {
+    app.bathMode = mode;
+    app.bathComplete = false;
+    app.bathRunning = false;
+    window.clearTimeout(app.bathTimer);
+    setSafeImage(el.bathCat, mode === "intro" ? ASSETS.bathIdle : ASSETS.bathHappy, ASSETS.bathIdle);
+    if (el.bathTitle) el.bathTitle.textContent = mode === "intro" ? "First bath" : "Bath time";
+    if (el.bathCopy) el.bathCopy.textContent = mode === "intro" ? "Fresh box, dusty paws." : "A warm scrub restores the sparkle.";
+    if (el.bathClean) {
+      el.bathClean.disabled = false;
+      el.bathClean.textContent = "Start bath";
+      el.bathClean.classList.remove("hidden");
+    }
+    el.bathDone?.classList.add("hidden");
+    el.bathBack?.classList.toggle("hidden", mode === "intro");
+    el.bathProgress?.classList.remove("is-running");
+    showScreen("bathroom");
+  }
+
+  async function completeBath() {
+    if (!app.cat || app.bathRunning || app.bathComplete) return;
+    app.bathRunning = true;
+    if (el.bathClean) {
+      el.bathClean.disabled = true;
+      el.bathClean.textContent = "Scrubbing";
+    }
+    if (el.bathTitle) el.bathTitle.textContent = "Bubble mode";
+    if (el.bathCopy) el.bathCopy.textContent = "The cleanest little protest in town.";
+    setSafeImage(el.bathCat, `${ASSETS.bathAnim}?t=${Date.now()}`, ASSETS.bathIdle);
+    el.bathProgress?.classList.remove("is-running");
+    void el.bathProgress?.offsetWidth;
+    el.bathProgress?.classList.add("is-running");
+    Sound.blip("soft");
+
+    app.bathTimer = window.setTimeout(async () => {
+      app.bathRunning = false;
+      app.bathComplete = true;
+      if (el.bathClean) el.bathClean.classList.add("hidden");
+      el.bathDone?.classList.remove("hidden");
+      if (el.bathTitle) el.bathTitle.textContent = "All clean";
+      if (el.bathCopy) el.bathCopy.textContent = "Cleanliness up. Patience slightly down.";
+      setSafeImage(el.bathCat, ASSETS.bathAngry, ASSETS.bathIdle);
+      await changeStats(
+        { cleanliness: 2, energy: -1, happiness: -1 },
+        { message: "Bath complete." },
+      );
+    }, 1450);
+  }
+
+  function openSettings() {
+    renderAudioLabels();
+    el.settingsModal?.classList.remove("hidden");
+  }
+
+  function closeSettings() {
+    el.settingsModal?.classList.add("hidden");
+  }
+
+  function openCredits() {
+    el.creditsModal?.classList.remove("hidden");
+  }
+
+  function closeCredits() {
+    el.creditsModal?.classList.add("hidden");
   }
 
   async function resetDemo() {
@@ -761,55 +910,60 @@ window.addEventListener("DOMContentLoaded", () => {
       Sound.toggleMute();
       Sound.blip("soft");
     });
-
     el.traitLeft?.addEventListener("click", () => nextTrait(-1));
     el.traitRight?.addEventListener("click", () => nextTrait(1));
     el.traitConfirm?.addEventListener("click", confirmTrait);
-
     el.nameOk?.addEventListener("click", saveNameAndContinue);
     el.nameCancel?.addEventListener("click", hideNameModal);
-
     el.scene2Cat?.addEventListener("click", unboxCat);
     el.scene2Bath?.addEventListener("click", () => openBathroom("intro"));
-
-    el.bathClean?.addEventListener("click", completeBath);
-    el.bathCat?.addEventListener("click", completeBath);
-    el.bathDone?.addEventListener("click", () => showMain("Back home, cleaner than before."));
-    el.bathBack?.addEventListener("click", () => showMain());
-
-    el.btnProfile?.addEventListener("click", openProfile);
-    el.profileClose?.addEventListener("click", closeProfile);
-    el.btnSettings?.addEventListener("click", () => openPlanned(
-      "Settings",
-      "More audio, accessibility, and save options are planned. The sound toggle already works.",
-    ));
-    el.btnCredits?.addEventListener("click", () => openPlanned(
-      "Credits",
-      "MeowDeck uses the existing pixel-art assets in this repository, with care-loop code and UI polish added in vanilla HTML, CSS, and JavaScript.",
-    ));
-    el.btnExit?.addEventListener("click", () => openPlanned(
-      "Exit",
-      "Progress is saved locally. Browser builds cannot close their own tab, but the demo can be reset.",
-      true,
-    ));
-    el.btnPlayroom?.addEventListener("click", openPlayroom);
-    el.btnBathroom?.addEventListener("click", () => openBathroom("care"));
+    el.phaseToggle?.addEventListener("click", cyclePhase);
 
     el.btnFeed?.addEventListener("click", doFeed);
     el.btnPlay?.addEventListener("click", () => doPlay(el.btnPlay));
     el.btnBathMain?.addEventListener("click", doBathMain);
     el.btnSleep?.addEventListener("click", doSleep);
 
-    el.playroomBack?.addEventListener("click", () => showMain());
-    el.playroomToy?.addEventListener("click", async () => {
-      await doPlay(el.playroomToy);
-      renderProfile();
-    });
+    el.btnProfile?.addEventListener("click", openProfile);
+    el.profileClose?.addEventListener("click", closeProfile);
+    el.btnPlayroom?.addEventListener("click", openPlayroom);
+    el.btnBathroom?.addEventListener("click", () => openBathroom("care"));
+    el.btnSettings?.addEventListener("click", openSettings);
+    el.btnCredits?.addEventListener("click", openCredits);
 
-    el.plannedClose?.addEventListener("click", closePlanned);
-    el.plannedExtra?.addEventListener("click", resetDemo);
+    el.playroomBack?.addEventListener("click", () => showMain());
+    el.playroomToy?.addEventListener("click", () => launchToy("ball"));
+    el.mouseChase?.addEventListener("click", () => launchToy("mouse"));
+    el.playBall?.addEventListener("click", () => hitToy("ball"));
+    el.playMouse?.addEventListener("click", () => hitToy("mouse"));
+
+    el.bathClean?.addEventListener("click", completeBath);
+    el.bathDone?.addEventListener("click", () => showMain("Back home, cleaner than before."));
+    el.bathBack?.addEventListener("click", () => showMain());
+
+    el.settingsMute?.addEventListener("click", () => Sound.toggleMute());
+    el.settingsPhase?.addEventListener("click", cyclePhase);
+    el.settingsReset?.addEventListener("click", resetDemo);
+    el.settingsClose?.addEventListener("click", closeSettings);
+    el.creditsClose?.addEventListener("click", closeCredits);
 
     document.addEventListener("keydown", handleKeyboard);
+  }
+
+  function closeTopModal() {
+    if (!el.nameModal?.classList.contains("hidden")) {
+      hideNameModal();
+      return true;
+    }
+    if (!el.settingsModal?.classList.contains("hidden")) {
+      closeSettings();
+      return true;
+    }
+    if (!el.creditsModal?.classList.contains("hidden")) {
+      closeCredits();
+      return true;
+    }
+    return false;
   }
 
   function handleKeyboard(event) {
@@ -831,11 +985,8 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (!el.plannedModal?.classList.contains("hidden")) {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        closePlanned();
-      }
+    if (event.key === "Escape" && closeTopModal()) {
+      event.preventDefault();
       return;
     }
 
@@ -860,11 +1011,9 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (app.currentScreen === "select") {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        goToTraits();
-      }
+    if (app.currentScreen === "select" && (event.key === "Enter" || event.key === " ")) {
+      event.preventDefault();
+      goToTraits();
       return;
     }
 
@@ -874,13 +1023,13 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (app.currentScreen === "bathroom" && event.key === "Escape" && app.bathMode !== "intro") {
+    if (app.currentScreen === "playroom" && event.key === "Escape") {
       event.preventDefault();
       showMain();
       return;
     }
 
-    if (app.currentScreen === "playroom" && event.key === "Escape") {
+    if (app.currentScreen === "bathroom" && event.key === "Escape" && app.bathMode !== "intro") {
       event.preventDefault();
       showMain();
       return;
@@ -912,8 +1061,9 @@ window.addEventListener("DOMContentLoaded", () => {
     setupSelect();
     setupEvents();
     renderTrait();
+    renderAudioLabels();
     showScreen("splash");
-    await wait(900);
+    await wait(750);
 
     const cat = await loadCat();
     if (!cat) {
@@ -927,6 +1077,9 @@ window.addEventListener("DOMContentLoaded", () => {
       avatar: cat.avatar,
       personality: cat.personality,
       adopted_at: cat.adopted_at,
+      day: cat.day,
+      phase: cat.phase,
+      playScore: cat.playScore,
       happiness: cat.happiness,
       hunger: cat.hunger,
       cleanliness: cat.cleanliness,
