@@ -1,169 +1,195 @@
 <!doctype html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kedi Asistanı</title>
+  <title>MeowDeck</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
   <div class="stage">
     <div class="stage-inner">
+      <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-      <!-- Splash / Loading Ekranı -->
       <section id="splash" class="screen">
-        <button id="btn-audio" class="audio-toggle" aria-pressed="false" title="Mute/Unmute">🔊</button>
-        <img src="assets/loading_bg.png" alt="bg" class="bg" />
-        <div class="center">
-          <img src="assets/cat_idle.png" class="cat-idle" alt="cat" />
-          <div class="loading-text">Yükleniyor…</div>
+        <button id="btn-audio" class="audio-toggle" aria-pressed="false" title="Mute audio">Sound</button>
+        <img src="assets/loading_bg.png" alt="" class="screen-bg splash-bg" />
+        <div class="splash-card">
+          <img src="assets/cat_idle.png" class="splash-cat" alt="Pixel cat" />
+          <div class="loading-text">MeowDeck</div>
+          <div class="loading-subtitle">Loading your tiny roommate...</div>
         </div>
       </section>
 
-      <!-- Seçim Ekranı -->
       <section id="select" class="screen hidden">
-        <img src="assets/bg.png" alt="bg" class="bg" />
+        <img src="assets/bg.png" alt="" class="screen-bg" />
         <div class="select-wrap">
           <h1 class="title">Choose your meow</h1>
-          <p class="demo-note">Demo sürümü: Şu an yalnızca beyaz kedi aktif.</p>
-          <div id="cat-grid" class="cat-grid" tabindex="-1">
-            <button class="cat" data-id="cat1"><div class="sprite cat1"></div></button>
-            <button class="cat" data-id="cat2"><div class="sprite cat2"></div></button>
-            <button class="cat" data-id="cat3"><div class="sprite cat3"></div></button>
-            <button class="cat" data-id="cat4"><div class="sprite cat4"></div></button>
-            <button class="cat" data-id="white"><div class="sprite cat5"></div></button>
+          <p class="demo-note">The white cat is ready for this prototype. More coats are planned.</p>
+          <div id="cat-grid" class="cat-grid" tabindex="-1" aria-label="Cat choices">
+            <button class="cat" data-id="cat1" type="button" aria-label="Locked cat"><div class="sprite cat1"></div></button>
+            <button class="cat" data-id="cat2" type="button" aria-label="Locked cat"><div class="sprite cat2"></div></button>
+            <button class="cat" data-id="cat3" type="button" aria-label="Locked cat"><div class="sprite cat3"></div></button>
+            <button class="cat" data-id="cat4" type="button" aria-label="Locked cat"><div class="sprite cat4"></div></button>
+            <button class="cat" data-id="white" type="button" aria-label="White cat"><div class="sprite cat5"></div></button>
             <div id="cursor" class="cursor"></div>
           </div>
         </div>
       </section>
 
-      <!-- TRAITS (karakter seçimi) -->
       <section id="traits" class="screen hidden">
-        <img src="assets/bg.png" alt="" class="bg" />
+        <img src="assets/bg.png" alt="" class="screen-bg" />
         <div class="traits-wrap">
           <div class="traits-canvas">
-            <img id="trait-preview" class="trait-preview" src="" alt="preview" />
+            <button class="trait-nav left" type="button" aria-label="Previous trait">&lt;</button>
+            <img id="trait-preview" class="trait-preview" src="assets/traits/shy.gif" alt="Trait preview" />
+            <button class="trait-nav right" type="button" aria-label="Next trait">&gt;</button>
             <div class="trait-name"></div>
             <div class="trait-desc"></div>
-            <div class="trait-nav left" role="button" aria-label="prev">◄</div>
-            <div class="trait-nav right" role="button" aria-label="next">►</div>
-            <div class="trait-tips">← → ile değiştir • Space/Enter ile onayla • Esc geri</div>
+            <button id="trait-confirm" class="primary-pixel-btn" type="button">Adopt this trait</button>
           </div>
         </div>
       </section>
 
-      <!-- NAME MODAL -->
-      <section id="name-modal" class="modal hidden" aria-modal="true" role="dialog">
-        <div class="modal-box">
-          <div class="modal-title">Name your cat</div>
-          <input id="name-input" type="text" maxlength="16" placeholder="Pofuduk" />
-          <div class="modal-action">
-            <button id="name-cancel" type="button">Cancel</button>
-            <button id="name-ok"     type="button">OK</button>
-          </div>
-          <div class="modal-hint">Enter ile onayla • Esc ile kapat</div>
-        </div>
-      </section>
-
-      <!-- SCENE2 -->
       <section id="scene2" class="screen hidden">
         <div class="scene2-wrap">
           <div class="scene2-canvas">
-            <img src="./assets/scene2/bg.png" class="scene2-bg" alt="">
-            <img id="scene2-cat" src="./assets/scene2/anim.gif" class="scene2-cat" alt="">
-            <div class="scene2-label">unbox the cat</div>
-            <div class="scene2-msg1 hidden">you sucesfully unboxed the cat</div>
-            <div class="scene2-msg2 hidden">but cat looks... dirty?</div>
-            <img id="btn-bath" src="./assets/scene2/button2.png" class="scene2-btn2 hidden" alt="to the bathroom">
+            <img src="assets/scene2/bg.png" class="scene2-bg" alt="" />
+            <img id="scene2-cat" src="assets/scene2/anim.gif" class="scene2-cat" alt="Boxed cat" />
+            <div id="scene2-label" class="scene2-label">Unbox the cat</div>
+            <div id="scene2-msg1" class="scene2-msg1 hidden">You found your new friend.</div>
+            <div id="scene2-msg2" class="scene2-msg2 hidden">A bath might help.</div>
+            <button id="btn-bath" class="scene2-next hidden" type="button">To bathroom</button>
           </div>
         </div>
       </section>
 
-      <!-- BATHROOM -->
       <section id="bathroom" class="screen hidden">
-        <div class="bathroom-wrap">
-          <div class="bathroom-canvas">
-            <img src="./assets/bathroom/bathroom.png" class="bathroom-bg" alt="">
-            <img id="bath-cat" src="./assets/bathroom/idlecat2.png" class="bathroom-cat" alt="">
-            <div id="bath-title" class="bathroom-title">Lets wash our cat!</div>
-            <button id="btn-try-playing" class="bathroom-try hidden">Let's try playing</button>
-          </div>
+        <div class="bathroom-canvas">
+          <img src="assets/bathroom/bathroom.png" class="bathroom-bg" alt="" />
+          <button id="btn-bathroom-back" class="scene-back" type="button">Back</button>
+          <img id="bath-cat" src="assets/bathroom/idlecat2.png" class="bathroom-cat" alt="Cat in bathroom" />
+          <div id="bath-title" class="bathroom-title">Bath time</div>
+          <div id="bath-copy" class="bathroom-copy">Clean fur, wounded pride.</div>
+          <button id="btn-bathroom-clean" class="primary-pixel-btn bathroom-action" type="button">Scrub</button>
+          <button id="btn-try-playing" class="primary-pixel-btn bathroom-try hidden" type="button">Back to room</button>
         </div>
       </section>
 
-      <!-- MAIN -->
       <section id="main" class="screen hidden">
         <div class="main-canvas">
-          <img class="main-bg"  src="assets/main/main_bg.png"  alt="main bg" />
-          <img class="main-top" src="assets/main/top_ui.png"   alt="top ui" />
+          <img class="main-bg" src="assets/main/main_bg.png" alt="" />
+          <img class="main-top" src="assets/main/top_ui.png" alt="" />
 
-          <button id="btn-profile"  class="main-btn main-profile"  aria-label="Profile"></button>
-          <button id="btn-settings" class="main-btn main-settings" aria-label="Settings"></button>
-          <button id="btn-exit"     class="main-btn main-exit"     aria-label="Exit"></button>
-          <button id="btn-credits"  class="main-btn main-credits"  aria-label="Credits"></button>
-
-          <!-- Kedi — src'si script.js tarafından dinamik değiştirilir -->
-          <img class="main-cat" src="assets/main/cat_idle.gif" alt="cat" />
-
-          <!-- ★ YENİ: Ana ekranda küçük stat çubuğu -->
-          <div id="stat-bar" class="stat-bar"></div>
-
-          <!-- ★ YENİ: Aksiyon butonları -->
-          <div class="action-bar">
-            <button id="btn-feed"      class="action-btn" title="Besle (F)">
-              <span class="action-icon">🍖</span>
-              <span class="action-label">Besle</span>
-            </button>
-            <button id="btn-play"      class="action-btn" title="Oyna (P)">
-              <span class="action-icon">🎮</span>
-              <span class="action-label">Oyna</span>
-            </button>
-            <button id="btn-sleep"     class="action-btn" title="Uyut (S)">
-              <span class="action-icon">💤</span>
-              <span class="action-label">Uyut</span>
-            </button>
-            <button id="btn-bath-main" class="action-btn" title="Yıka (B)">
-              <span class="action-icon">🛁</span>
-              <span class="action-label">Yıka</span>
-            </button>
+          <div class="top-status">
+            <span id="day-label">Day 1</span>
+            <span id="mood-label">Cozy</span>
           </div>
 
-          <button id="btn-playroom" class="main-btn main-playroom" aria-label="Playroom"></button>
-          <button id="btn-bathroom" class="main-btn main-bathroom" aria-label="Bathroom"></button>
+          <button id="btn-profile" class="main-btn main-profile" type="button" aria-label="Profile"></button>
+          <button id="btn-settings" class="main-btn main-settings" type="button" aria-label="Settings"></button>
+          <button id="btn-exit" class="main-btn main-exit" type="button" aria-label="Exit"></button>
+          <button id="btn-credits" class="main-btn main-credits" type="button" aria-label="Credits"></button>
+          <button id="btn-playroom" class="main-btn main-playroom" type="button" aria-label="Playroom"></button>
+          <button id="btn-bathroom" class="main-btn main-bathroom" type="button" aria-label="Bathroom"></button>
+
+          <section class="stat-panel" aria-label="Cat status">
+            <h2 id="main-cat-name">Miso</h2>
+            <p id="main-cat-mood">Settling in.</p>
+            <div id="stat-list" class="stat-list"></div>
+          </section>
+
+          <div class="cat-zone">
+            <img id="main-cat-img" class="main-cat" src="assets/main/cat_idle.gif" alt="Cat companion" />
+            <div id="cat-feedback" class="cat-feedback hidden"></div>
+          </div>
+
+          <div id="alert-banner" class="alert-banner hidden"></div>
+
+          <div class="action-panel" aria-label="Care actions">
+            <button id="btn-feed" class="action-btn" type="button" title="Feed">
+              <span class="action-glyph">+</span>
+              <span>Feed</span>
+            </button>
+            <button id="btn-play" class="action-btn" type="button" title="Play">
+              <span class="action-glyph">></span>
+              <span>Play</span>
+            </button>
+            <button id="btn-bath-main" class="action-btn" type="button" title="Bath">
+              <span class="action-glyph">~</span>
+              <span>Bath</span>
+            </button>
+            <button id="btn-sleep" class="action-btn" type="button" title="Sleep">
+              <span class="action-glyph">Zz</span>
+              <span>Sleep</span>
+            </button>
+          </div>
         </div>
       </section>
 
-      <!-- PROFILE  -->
       <section id="profile" class="screen hidden">
         <div class="profile-canvas">
-          <img class="profile-bg" src="assets/profile/profile_bg.png" alt="profile">
-
-          <button id="btn-profile-close" class="profile-close" aria-label="Close"></button>
+          <img class="profile-bg" src="assets/profile/profile_bg.png" alt="" />
+          <button id="btn-profile-close" class="profile-close" type="button" aria-label="Close profile"></button>
           <div id="profile-adopted" class="profile-adopted"></div>
+          <div id="profile-name" class="profile-name"></div>
+          <div id="profile-trait" class="profile-trait"></div>
 
-          <!-- 12 kalp -->
-          <img id="h-happiness-0"   class="heart" alt="">
-          <img id="h-happiness-1"   class="heart" alt="">
-          <img id="h-happiness-2"   class="heart" alt="">
+          <img id="h-happiness-0" class="heart" alt="" />
+          <img id="h-happiness-1" class="heart" alt="" />
+          <img id="h-happiness-2" class="heart" alt="" />
 
-          <img id="h-cleanliness-0" class="heart" alt="">
-          <img id="h-cleanliness-1" class="heart" alt="">
-          <img id="h-cleanliness-2" class="heart" alt="">
+          <img id="h-cleanliness-0" class="heart" alt="" />
+          <img id="h-cleanliness-1" class="heart" alt="" />
+          <img id="h-cleanliness-2" class="heart" alt="" />
 
-          <img id="h-hunger-0"      class="heart" alt="">
-          <img id="h-hunger-1"      class="heart" alt="">
-          <img id="h-hunger-2"      class="heart" alt="">
+          <img id="h-hunger-0" class="heart" alt="" />
+          <img id="h-hunger-1" class="heart" alt="" />
+          <img id="h-hunger-2" class="heart" alt="" />
 
-          <img id="h-energy-0"      class="heart" alt="">
-          <img id="h-energy-1"      class="heart" alt="">
-          <img id="h-energy-2"      class="heart" alt="">
+          <img id="h-energy-0" class="heart" alt="" />
+          <img id="h-energy-1" class="heart" alt="" />
+          <img id="h-energy-2" class="heart" alt="" />
         </div>
       </section>
 
-    </div><!-- /.stage-inner -->
-  </div><!-- /.stage -->
+      <section id="playroom" class="screen hidden">
+        <div class="playroom-canvas">
+          <img class="playroom-bg" src="assets/playroom/Playroom.png" alt="" />
+          <button id="btn-playroom-back" class="scene-back" type="button">Back</button>
+          <img class="playroom-cat" src="assets/playroom/cat_idle.gif" alt="Cat in playroom" />
+          <div class="playroom-panel">
+            <h2>Playroom</h2>
+            <p>Toy box systems are planned. For now, a quick game still cheers the cat up.</p>
+            <button id="btn-playroom-toy" class="primary-pixel-btn" type="button">Toss toy</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <section id="name-modal" class="modal hidden" aria-modal="true" role="dialog" aria-labelledby="name-title">
+    <div class="modal-box">
+      <h2 id="name-title" class="modal-title">Name your cat</h2>
+      <input id="name-input" type="text" maxlength="16" placeholder="Miso" autocomplete="off" />
+      <div class="modal-action">
+        <button id="name-cancel" type="button">Cancel</button>
+        <button id="name-ok" type="button">OK</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="planned-modal" class="modal hidden" aria-modal="true" role="dialog" aria-labelledby="planned-title">
+    <div class="modal-box planned-box">
+      <h2 id="planned-title" class="modal-title">Planned feature</h2>
+      <p id="planned-copy"></p>
+      <div class="modal-action">
+        <button id="planned-extra" class="hidden" type="button">Reset demo</button>
+        <button id="planned-close" type="button">Close</button>
+      </div>
+    </div>
+  </section>
 
   <script src="script.js"></script>
 </body>
