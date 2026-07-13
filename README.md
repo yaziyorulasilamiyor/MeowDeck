@@ -30,6 +30,20 @@ folder with a local server such as Live Server.
 - Keyboard on main room: `F` feed, `P` play, `B` bath, `S` sleep.
 - Reset demo data: `Shift + R`.
 
+## Oyun Ici Goruntuler
+
+| Kedi Secimi | Trait |
+| --- | --- |
+| ![Kedi Secimi](screenshots/chooseMeow.png) | ![Trait](screenshots/TraitScreen.png) |
+
+| Gunduz Main | Gece Main |
+| --- | --- |
+| ![Gunduz Main](screenshots/Daylight_Mainscreen.png) | ![Gece Main](screenshots/Nigh_Mainscreen.png) |
+
+| Bathroom |
+| --- |
+| ![Bathroom](screenshots/bathroom.png) |
+
 ## Project Structure
 
 - `index.html` - screen markup, game panels, and modals.
